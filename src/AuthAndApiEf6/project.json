@@ -2,8 +2,8 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "EntityFramework": "6.*",
-    "AuthAndApi": "1.0.0-*"
+    "AuthAndApi": "1.0.0-*",
+    "EntityFramework": "6.*"
   },
 
   "frameworks": {
