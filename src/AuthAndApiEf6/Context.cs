@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Data.Entity;
-using AuthorizationRepository = AuthAndApi.Repository.Authorization<int>;
+using System.Data.Entity.Migrations;
+using AuthorizationRepository = AuthAndApi.Repository.Authorization;
 
 
 namespace AuthAndApi.Ef6 {
@@ -10,16 +11,17 @@ namespace AuthAndApi.Ef6 {
 
         public DbSet<Authorization> Authorizations { get; set; }
 
-        public Authorization Get(int id) {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<Authorization> GetForOwner(Owner owner) {
-            throw new NotImplementedException();
+            return Authorizations
+                .Where(a => a.Owner == owner)
+                .AsNoTracking()
+                .ToList()
+            ;
         }
 
-        public IEnumerable<Authorization> UpdateOrCreate() {
-            throw new NotImplementedException();
+        void AuthorizationRepository.UpdateOrCreate(Authorization authorization) {
+            // I know: http://stackoverflow.com/questions/5557829/update-row-if-it-exists-else-insert-logic-with-entity-framework
+            Authorizations.AddOrUpdate(authorization);
         }
 
     }
