@@ -2,26 +2,25 @@
 using System.Linq;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
-using AuthorizationRepository = AuthAndApi.Repository.Authorization;
 
 
 namespace AuthAndApi.Ef6 {
 
-    public class Context : DbContext, AuthorizationRepository {
+    public class Context<OwnerType> : DbContext, Repository.Authorization where OwnerType : AuthAndApi.Owner {
 
-        public DbSet<Authorization> Authorizations { get; set; }
+        public DbSet<AuthAndApi.Authorization<OwnerType>> Authorizations { get; set; }
 
-        public IEnumerable<Authorization> GetForOwner(Owner owner) {
+        public IEnumerable<AuthorizationContract> GetForOwner(AuthAndApi.Owner owner) {
             return Authorizations
-                .Where(a => a.Owner == owner)
+                .Where(a => a.Owner.Equals(owner))
                 .AsNoTracking()
                 .ToList()
             ;
         }
 
-        void AuthorizationRepository.UpdateOrCreate(Authorization authorization) {
+        public void UpdateOrCreate(AuthAndApi.AuthorizationContract authorization) {
             // I know: http://stackoverflow.com/questions/5557829/update-row-if-it-exists-else-insert-logic-with-entity-framework
-            Authorizations.AddOrUpdate(authorization);
+            Authorizations.AddOrUpdate((Authorization<OwnerType>)authorization);
         }
 
     }
